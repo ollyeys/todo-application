@@ -1,14 +1,11 @@
-FROM tomcat:6
+FROM tomcat
 
-ENV APP_ROOT /src
+WORKDIR /usr/local/tomcat/webapps
 
-RUN apt-get update && apt-get install -y default-jdk
+COPY target/todo-application.war .
 
+RUN mv todo-application.war ROOT.war
 
-COPY . $APP_ROOT/
-COPY images images
-COPY pomx.xml pomx.xml
-WORKDIR $APP_ROOT
+RUN rm -rf ROOT
 
-RUN jar -cvf app_name.war *
-RUN cp app_name.war $CATALINA_BASE/webapps/app_name.war
+CMD ["catalina.sh", "run"]
