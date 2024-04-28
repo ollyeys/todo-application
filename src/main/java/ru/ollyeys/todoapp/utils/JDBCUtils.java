@@ -5,12 +5,15 @@ import java.sql.*;
 public class JDBCUtils {
 
     private static final String jdbcURL = System.getenv("DB_URL");
+
     private static final String jdbcUsername = System.getenv("DB_USER");
     private static final String jdbcPassword = System.getenv("DB_PASSWORD");
 
 
     public static Connection getConnection() throws SQLException {
-
+        System.out.println(jdbcURL);
+        System.out.println(jdbcUsername);
+        System.out.println(jdbcPassword);
         Connection connection = null;
         connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
         return connection;
