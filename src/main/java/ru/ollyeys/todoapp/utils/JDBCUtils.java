@@ -4,9 +4,9 @@ import java.sql.*;
 
 public class JDBCUtils {
 
-    private static final String jdbcURL = "jdbc:postgresql://localhost:5432/test_db";
-    private static final String jdbcUsername = "test_db";
-    private static final String jdbcPassword = "test_db";
+    private static final String jdbcURL = System.getenv("DB_URL");
+    private static final String jdbcUsername = System.getenv("DB_USER");
+    private static final String jdbcPassword = System.getenv("DB_PASSWORD");
 
 
     public static Connection getConnection() throws SQLException {
