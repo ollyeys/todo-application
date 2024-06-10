@@ -3,22 +3,22 @@ package ru.ollyeys.todoapp.model;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private static final long serialID = 1L;
-    private String name;
-    private String surname;
+    private Integer userId;
+    private String userName;
+    private String userSurname;
     private String username;
     private String password;
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setUserSurname(String userSurname) {
+        this.userSurname = userSurname;
     }
 
     public void setUsername(String username) {
@@ -29,8 +29,8 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getUserSurname() {
+        return userSurname;
     }
 
     public String getUsername() {
@@ -39,5 +39,13 @@ public class User implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

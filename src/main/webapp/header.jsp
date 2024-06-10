@@ -20,7 +20,7 @@
                         <a class="nav-link" href="<%= request.getContextPath() %>/login">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/register" class="nav-link">Sign up</a>
+                        <a class="nav-link"  href="<%= request.getContextPath() %>/register">Sign up</a>
                     </li>
                 </ul>
             </div>

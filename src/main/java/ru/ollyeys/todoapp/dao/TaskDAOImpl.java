@@ -1,65 +1,115 @@
 package ru.ollyeys.todoapp.dao;
 
 import ru.ollyeys.todoapp.model.Task;
+import ru.ollyeys.todoapp.model.TaskDTO;
 import ru.ollyeys.todoapp.utils.JDBCUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.time.LocalDate;
 
 public class TaskDAOImpl implements TaskDAO {
 
 //    private static final String INSERT_TASK_SQL = "insert into todos" +
-//            " (id, title, description, user_id) values " + " (?, ?, ?, ?, ?); ";
+//            " (title, username, description, target_date, is_done) values " + " (?, ?, ?, ?, ?); ";
 
-    private static final String SELECT_TASK_BY_ID = "select id, title, description " +
-            "from todos where id =?";
+    private static final String INSERT_TASK_SQL = "insert into todos" +
+            " (title, description, user_id, targetdate, status) values " + " (?, ?, ?, ?, ?); ";
+
+    private static final String SELECT_TASK_BY_ID = "select title, description, user_id, targetdate, status " +
+            "from todos where id = ?;";
+
+    private static final String SELECT_ALL_TASKS_USERNAME = "select title, description " +
+            "from todos where username =?";
+
+    private static final String SELECT_ALL_TASKS_USERID = "select title, description " +
+            "from todos where user_id =?";
+
+    private static final String DELETE_TASK_BY_ID = "delete from todos where id = ?;";
+    private static final String UPDATE_TASK = "update todos set title = ?, description = ?, targetdate = ?, status = ? " + "where id = ?;";
+
 
 
     @Override
     public void insertTask(Task task) throws SQLException {
+        System.out.println(INSERT_TASK_SQL);
+        try (Connection connection = JDBCUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_TASK_SQL)) {
+//            preparedStatement.setLong(1, task.getId());
+            preparedStatement.setString(1, task.getTaskTitle());
+            preparedStatement.setString(2, task.getTaskDescription());
+            preparedStatement.setLong(3, task.getUser_id());
+            preparedStatement.setDate(4, JDBCUtils.getSQLDate(task.getTargetDate()));
+            preparedStatement.setBoolean(5, task.getTaskStatus());
+            System.out.println(preparedStatement);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            System.out.println("sql exception");
+        }
 
     }
 
     @Override
-    public Task selectTask(long taskId) {
-        Task task = null;
+    public TaskDTO selectTask(Integer taskId) {
+        TaskDTO task = null;
+
 
         try (Connection connection = JDBCUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TASK_BY_ID);) {
-            preparedStatement.setLong(1, taskId);
+            preparedStatement.setInt(1, taskId);
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                long id = rs.getLong("id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
-                long user_id = rs.getLong("user_id");
-                task = new Task(id, title, description, user_id);
+                Integer userId = Integer.parseInt(rs.getString("user_id"));
+                LocalDate targetDate = rs.getDate("targetdate").toLocalDate();
+                boolean isDone = rs.getBoolean("status");
+                task = new TaskDTO(taskId, title, description, userId, targetDate, isDone);
+                System.out.println(task);
             }
         } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
 //            JDBCUtils.printSQLException(exception);
         }
         return task;
     }
 
-    @Override
-    public List<Task> selectAllTasks(String username) {
-        return null;
-    }
+
 
     @Override
     public boolean deleteTask(int id) throws SQLException {
-        return false;
+        boolean taskDeleted;
+        try (Connection connection = JDBCUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_TASK_BY_ID);) {
+            preparedStatement.setInt(1, id);
+            taskDeleted = preparedStatement.executeUpdate() > 0;
+        }
+        return taskDeleted;
     }
 
-    @Override
-    public boolean updateTask(Task task) throws SQLException {
-        return false;
+
+    public boolean updateTask(int id, Task task) throws SQLException {
+        boolean taskUpdated;
+        try (Connection connection = JDBCUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_TASK);) {
+            preparedStatement.setString(1, task.getTaskTitle());
+            preparedStatement.setString(2, task.getTaskDescription());
+            preparedStatement.setInt(5, id);
+            preparedStatement.setDate(3, JDBCUtils.getSQLDate(task.getTargetDate()));
+            preparedStatement.setBoolean(4, task.getTaskStatus());
+
+            System.out.println(preparedStatement);
+
+            taskUpdated = preparedStatement.executeUpdate() > 0;
+        }
+        return taskUpdated;
     }
+
+
 
 
 }

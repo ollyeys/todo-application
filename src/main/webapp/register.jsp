@@ -24,14 +24,13 @@
 <div class="container mt-4 mb-5">
 
     <h2 class="mb-4">User Register Form</h2>
+    <form action="<%=request.getContextPath()%>/register" method="post">
     <div class="col-md-6">
         <c:if test="${not empty NOTIFICATION}">
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-success" id="alert" role="alert">
                     <p>${NOTIFICATION}</p>
                 </div>
             </c:if>
-
-        <form action="<%=request.getContextPath()%>/register" method="post">
 
             <div class="mb-3">
                 <label for="name" class="form-label">First Name:</label>

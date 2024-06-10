@@ -10,13 +10,21 @@ import jakarta.servlet.http.HttpSession;
 import ru.ollyeys.todoapp.dao.LoginDAO;
 import ru.ollyeys.todoapp.model.Login;
 import ru.ollyeys.todoapp.model.Task;
+import ru.ollyeys.todoapp.model.TaskDTO;
+import ru.ollyeys.todoapp.model.User;
+import ru.ollyeys.todoapp.utils.JDBCUtils;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
+
+    private static final String GET_USER_ID = "select id from users where username = ?;";
 
     private LoginDAO loginDAO;
 
@@ -26,7 +34,9 @@ public class LoginController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("login.jsp");
+//        response.sendRedirect("login.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+        dispatcher.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -37,26 +47,39 @@ public class LoginController extends HttpServlet {
     private void authenticate(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-
         System.out.println("Authentification start");
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println(username);
-        System.out.println(password);
-        Login login = new Login();
-        login.setUsername(username);
-        login.setPassword(password);
+
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
 
         try {
-            if (loginDAO.validate(login)) {
+            if (loginDAO.validate(user)) {
                 HttpSession session = request.getSession();
-                session.setAttribute("username", login.getUsername());
-                List<Task> listTask = loginDAO.selectAllTasks(username);
+                Connection connection = JDBCUtils.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "select id from users where username = ?;");
+                preparedStatement.setString(1, user.getUsername());
+                ResultSet rs = preparedStatement.executeQuery();
+
+                while (rs.next()) {
+                    Integer userId = rs.getInt("id");
+                    user.setUserId(userId);
+                }
+
+                session.setAttribute("username", user.getUsername());
+                session.setAttribute("userId", user.getUserId());
+
+                List <TaskDTO> listTask = loginDAO.selectAllTasks(user.getUserId());
+
                 request.setAttribute("listTask", listTask);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/task-list.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("task-list.jsp");
                 dispatcher.forward(request, response);
             } else {
-                HttpSession session = request.getSession();
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/Error.jsp");
                 dispatcher.forward(request, response);
             }

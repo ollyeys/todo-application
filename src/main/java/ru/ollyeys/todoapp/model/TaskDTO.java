@@ -1,46 +1,48 @@
 package ru.ollyeys.todoapp.model;
 
 
+
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 
-public class Task {
-
-    private String taskTitle;
-
-    private String taskDescription;
+public class TaskDTO {
+    private Integer id;
+    private String title;
+    private String description;
     private Integer userId;
+
     private LocalDate targetDate;
     private boolean taskStatus;
 
-    protected Task() {
 
+    public TaskDTO() {
     }
 
-    public Task(String taskTitle, String taskDescription, Integer userId, LocalDate targetDate, boolean taskStatus) {
+    public TaskDTO(Integer id, String title, String description, Integer userId, LocalDate targetDate, boolean taskStatus) {
         super();
-        this.taskTitle = taskTitle;
-        this.taskDescription = taskDescription;
-        this.userId = userId;
+        this.id = id;
+        this.title = title;
+        this.description = description;
         this.targetDate = targetDate;
         this.taskStatus = taskStatus;
+        this.userId = userId;
     }
 
-
-
-
-    public String getTaskTitle() {
-        return taskTitle;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTaskTitle(String taskTitle) {
-        this.taskTitle = taskTitle;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getTaskDescription() {
-        return taskDescription;
+    public String getTitle() {
+        return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public LocalDate getTargetDate() {
         return targetDate;
@@ -50,7 +52,7 @@ public class Task {
         this.targetDate = targetDate;
     }
 
-    public boolean getTaskStatus() {
+    public boolean isTaskStatus() {
         return taskStatus;
     }
 
@@ -58,8 +60,12 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getUser_id() {
@@ -76,6 +82,11 @@ public class Task {
 
 
 
+
+
+
+
+
 //    @Override
 //    public int hashCode() {
 //        final int prime = 31;
@@ -83,7 +94,7 @@ public class Task {
 //        result = prime * result + (int)(id ^ (id >>> 32));
 //        return result;
 //    }
-
+//
 //    @Override
 //    public boolean equals(Object obj) {
 //        if (this == obj)
@@ -97,4 +108,5 @@ public class Task {
 //            return false;
 //        return true;
 //    }
+
 }

@@ -23,7 +23,7 @@
                         <a href="<%=request.getContextPath()%>/list" class="nav-link">Todos</a>
                     </li>
                     <li class="nav-item">
-                        <a href="<%=request.getContextPath()%>/logout" class="nav-link">Logout</a>
+                        <a href="<%=request.getContextPath()%>/login" class="nav-link">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -39,7 +39,6 @@
             <h2 class="mt-4">Edit Task</h2>
             <form action="<%= request.getContextPath() %>/update" method="post">
                 <input type="hidden" name="id" value="<c:out value='${existingTask.id}' />">
-                <input type="hidden" name="username" value="<c:out value='${existingTask.username}' />">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Task Title</label>
@@ -51,6 +50,7 @@
                     <input type="text" class="form-control" id="description" name="description"
                            placeholder="Enter task description" value="<c:out value='${existingTask.description}' />">
                 </div>
+
                 <div class="mb-3">
                     <label for="isDone" class="form-label">Task Status</label>
                     <select class="form-select" id="isDone" name="isDone">
@@ -63,6 +63,7 @@
                     <input type="date" class="form-control" id="targetDate" name="targetDate"
                            value="<c:out value='${existingTask.targetDate}' />" required>
                 </div>
+
                 <button type="submit" class="btn btn-success">Save Changes</button>
             </form>
         </div>

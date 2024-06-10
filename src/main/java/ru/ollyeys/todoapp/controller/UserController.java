@@ -25,7 +25,9 @@ public class UserController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("register.jsp");
+//        response.sendRedirect("register.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void register(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -35,10 +37,12 @@ public class UserController extends HttpServlet {
         String password = request.getParameter("password");
 
         User user = new User();
-        user.setName(name);
-        user.setSurname(surname);
+
+        user.setUserName(name);
+        user.setUserSurname(surname);
         user.setUsername(username);
         user.setPassword(password);
+
 
         try {
             int result = userDAO.registerUser(user);
