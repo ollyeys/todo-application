@@ -17,10 +17,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/login">Login</a>
+                        <a class="nav-link" role="button" href="<%= request.getContextPath() %>/login">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"  href="<%= request.getContextPath() %>/register">Sign up</a>
+                        <a class="nav-link" role="button" href="<%= request.getContextPath() %>/register">Sign up</a>
                     </li>
                 </ul>
             </div>
