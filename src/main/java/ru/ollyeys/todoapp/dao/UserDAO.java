@@ -1,5 +1,7 @@
 package ru.ollyeys.todoapp.dao;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ollyeys.todoapp.model.User;
 import ru.ollyeys.todoapp.utils.JDBCUtils;
 
@@ -12,6 +14,8 @@ public class UserDAO {
     private static final String INSERT_USER = "insert into users" + " (name, surname, username, password) values " +
             " (?, ?, ?, ?); ";
 
+    protected static final Logger LOGGER = LogManager.getLogger();
+
 
     public int registerUser(User user) throws ClassNotFoundException, SQLException {
 
@@ -21,8 +25,8 @@ public class UserDAO {
         Class.forName("org.postgresql.Driver");
 
         Connection connection = JDBCUtils.getConnection();
-        System.out.println(connection);
-        System.out.println("Registration start");
+        LOGGER.info(connection);
+        LOGGER.info("REGISTRATION START");
 
 
         PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER);
@@ -32,21 +36,8 @@ public class UserDAO {
         preparedStatement.setString(3, user.getUsername());
         preparedStatement.setString(4, user.getPassword());
 
-        System.out.println(preparedStatement);
+        LOGGER.info(preparedStatement);
         result = preparedStatement.executeUpdate();
-
-
-
-//        try (Connection connection = JDBCUtils.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
-//            System.out.println(preparedStatement);
-//            System.out.println(user.getName());
-//            preparedStatement.setString(1, user.getName());
-//            preparedStatement.setString(2, user.getSurname());
-//            preparedStatement.setString(3, user.getUsername());
-//            preparedStatement.setString(4, user.getPassword());
-
-
         return result;
 
     }

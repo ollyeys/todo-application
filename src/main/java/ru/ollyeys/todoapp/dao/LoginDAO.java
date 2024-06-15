@@ -2,6 +2,8 @@ package ru.ollyeys.todoapp.dao;
 
 /* contains JDBC code validate user login and password with users table */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ollyeys.todoapp.model.Login;
 import ru.ollyeys.todoapp.model.Task;
 import ru.ollyeys.todoapp.model.TaskDTO;
@@ -19,45 +21,31 @@ import java.util.List;
 public class LoginDAO {
 
     private static final String SELECT_ALL_TASKS = "select * from todos where user_id = ?;";
-
-
+    protected static final Logger LOGGER = LogManager.getLogger();
 
 
     public boolean validate(User user) throws ClassNotFoundException, SQLException {
         boolean state = false;
 
-        Class.forName("org.postgresql.Driver");
 
+        Class.forName("org.postgresql.Driver");
         Connection connection = JDBCUtils.getConnection();
-        System.out.println(connection);
-        System.out.println("Validation start");
+
+        LOGGER.info(connection);
+        LOGGER.info("VALIDATION START");
 
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "select * from users where username = ? and password = ? ");
 
         preparedStatement.setString(1, user.getUsername());
         preparedStatement.setString(2, user.getPassword());
-        System.out.println(preparedStatement);
+        LOGGER.info(preparedStatement);
         ResultSet resultSet = preparedStatement.executeQuery();
 
 
         state = resultSet.next();
-        System.out.println("Validation state:" + ' ' + state);
+        LOGGER.info("VALIDATION STATE: " + state);
         return state;
-
-
-//        try (Connection connection = JDBCUtils.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(
-//                     "select * from users where username = ? and password = ? ")) {
-//            preparedStatement.setString(1, login.getUsername());
-//            preparedStatement.setString(2, login.getPassword());
-//            System.out.println(preparedStatement);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            state = resultSet.next();
-//        } catch (SQLException ex) {
-////            JDBCUtils.printSQLException(ex);
-//        }
-//        return state;
     }
 
     public List<TaskDTO> selectAllTasks(Integer userId) {
@@ -69,7 +57,7 @@ public class LoginDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_TASKS);) {
             preparedStatement.setInt(1, userId);
 
-            System.out.println(preparedStatement);
+            LOGGER.info(preparedStatement);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -82,10 +70,9 @@ public class LoginDAO {
                 LocalDate targetDate = rs.getDate("targetdate").toLocalDate();
                 boolean isDone = rs.getBoolean("status");
                 tasks.add(new TaskDTO(id, title, description, userId, targetDate, isDone));
-                System.out.println(tasks);
             }
         } catch (SQLException exception) {
-            System.out.println("exception");
+            LOGGER.warn("SQL_EXCVEPTION" + exception);
         }
         return tasks;
     }

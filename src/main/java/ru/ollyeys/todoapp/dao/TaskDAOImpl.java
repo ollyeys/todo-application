@@ -1,5 +1,7 @@
 package ru.ollyeys.todoapp.dao;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.ollyeys.todoapp.model.Task;
 import ru.ollyeys.todoapp.model.TaskDTO;
 import ru.ollyeys.todoapp.utils.JDBCUtils;
@@ -30,6 +32,8 @@ public class TaskDAOImpl implements TaskDAO {
     private static final String DELETE_TASK_BY_ID = "delete from todos where id = ?;";
     private static final String UPDATE_TASK = "update todos set title = ?, description = ?, targetdate = ?, status = ? " + "where id = ?;";
 
+    protected static final Logger LOGGER = LogManager.getLogger();
+
 
 
     @Override
@@ -43,10 +47,10 @@ public class TaskDAOImpl implements TaskDAO {
             preparedStatement.setLong(3, task.getUser_id());
             preparedStatement.setDate(4, JDBCUtils.getSQLDate(task.getTargetDate()));
             preparedStatement.setBoolean(5, task.getTaskStatus());
-            System.out.println(preparedStatement);
+            LOGGER.info(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            System.out.println("sql exception");
+            LOGGER.warn("SQL_EXCEPTION" + exception);
         }
 
     }
@@ -59,7 +63,7 @@ public class TaskDAOImpl implements TaskDAO {
         try (Connection connection = JDBCUtils.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TASK_BY_ID);) {
             preparedStatement.setInt(1, taskId);
-            System.out.println(preparedStatement);
+            LOGGER.info(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -69,11 +73,10 @@ public class TaskDAOImpl implements TaskDAO {
                 LocalDate targetDate = rs.getDate("targetdate").toLocalDate();
                 boolean isDone = rs.getBoolean("status");
                 task = new TaskDTO(taskId, title, description, userId, targetDate, isDone);
-                System.out.println(task);
+//                System.out.println(task);
             }
         } catch (SQLException exception) {
-            System.out.println(exception.getMessage());
-//            JDBCUtils.printSQLException(exception);
+            LOGGER.warn("SQL_EXCEPTION" + exception);
         }
         return task;
     }
@@ -101,15 +104,9 @@ public class TaskDAOImpl implements TaskDAO {
             preparedStatement.setInt(5, id);
             preparedStatement.setDate(3, JDBCUtils.getSQLDate(task.getTargetDate()));
             preparedStatement.setBoolean(4, task.getTaskStatus());
-
-            System.out.println(preparedStatement);
-
+            LOGGER.info(preparedStatement);
             taskUpdated = preparedStatement.executeUpdate() > 0;
         }
         return taskUpdated;
     }
-
-
-
-
 }

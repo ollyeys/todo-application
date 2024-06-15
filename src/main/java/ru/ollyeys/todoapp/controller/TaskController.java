@@ -117,9 +117,9 @@ public class TaskController extends HttpServlet {
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         LocalDate targetDate = LocalDate.parse(request.getParameter("targetDate"));
-        System.out.println(targetDate);
+//        System.out.println(targetDate);
         boolean isDone = Boolean.valueOf(request.getParameter("isDone"));
-        System.out.println(isDone);
+//        System.out.println(isDone);
         Integer userId = (Integer) session.getAttribute("userId");
         Task insertTask = new Task (title, description, userId, targetDate, isDone);
         taskDAO.insertTask(insertTask);
